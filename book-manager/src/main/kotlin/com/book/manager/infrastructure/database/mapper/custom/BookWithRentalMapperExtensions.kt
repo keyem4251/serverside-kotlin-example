@@ -1,7 +1,6 @@
 package com.book.manager.infrastructure.database.mapper.custom
 
 import com.book.manager.infrastructure.database.mapper.BookDynamicSqlSupport
-import org.mybatis.dynamic.sql.SqlBuilder.select
 
 import com.book.manager.infrastructure.database.mapper.BookDynamicSqlSupport.Book.author
 import com.book.manager.infrastructure.database.mapper.BookDynamicSqlSupport.Book.id
@@ -12,7 +11,7 @@ import com.book.manager.infrastructure.database.mapper.RentalDynamicSqlSupport.R
 import com.book.manager.infrastructure.database.mapper.RentalDynamicSqlSupport.Rental.returnDeadline
 import com.book.manager.infrastructure.database.mapper.RentalDynamicSqlSupport.Rental.userId
 import com.book.manager.infrastructure.database.record.custom.BookWithRentalRecord
-import org.mybatis.dynamic.sql.SqlBuilder.equalTo
+import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.from
 
 
@@ -33,4 +32,14 @@ fun BookWithRentalMapper.select(): List<BookWithRentalRecord> {
         }
     }
     return selectMany(selectStatement)
+}
+
+fun BookWithRentalMapper.selectByPrimaryKey(id_: Long): BookWithRentalRecord? {
+    val selectStatement = select(columnList).from(BookDynamicSqlSupport.Book, "b") {
+        leftJoin(RentalDynamicSqlSupport.Rental, "r") {
+            on(BookDynamicSqlSupport.Book.id, equalTo(RentalDynamicSqlSupport.Rental.bookId))
+        }
+        where(id, isEqualTo(id_))
+    }
+    return selectOne(selectStatement)
 }

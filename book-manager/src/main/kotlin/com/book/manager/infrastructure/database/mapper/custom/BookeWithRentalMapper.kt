@@ -2,10 +2,7 @@ package com.book.manager.infrastructure.database.mapper.custom
 
 import com.book.manager.infrastructure.database.record.custom.BookWithRentalRecord
 import com.mysql.cj.xdevapi.SelectStatement
-import org.apache.ibatis.annotations.Mapper
-import org.apache.ibatis.annotations.Result
-import org.apache.ibatis.annotations.Results
-import org.apache.ibatis.annotations.SelectProvider
+import org.apache.ibatis.annotations.*
 import org.apache.ibatis.type.JdbcType
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
@@ -27,4 +24,8 @@ interface BookWithRentalMapper {
     )
 
     fun selectMany(selectStatement: SelectStatementProvider): List<BookWithRentalRecord>
+
+    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
+    @ResultMap("BookWithRentalRecordResult")
+    fun selectOne(selectStatement: SelectStatementProvider): BookWithRentalRecord?
 }
